@@ -1,0 +1,34 @@
+from django import forms
+from .models import EventRegistration
+
+class EventRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = EventRegistration
+        fields = '__all__'
+        widgets = {
+            'password': forms.PasswordInput()
+        }
+    
+    def clean_full_name(self):
+        name = self.cleaned_data.get('full_name')
+        if len(name) < 5:
+            raise forms.ValidationError("Full name must be at least 5 characters.")
+        return name
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email.endswith('@gmail.com'):
+            raise forms.ValidationError("Email must end with @gmail.com.")
+        return email
+
+    def clean_age(self):
+        age = self.cleaned_data.get('age')
+        if age < 18:
+            raise forms.ValidationError("Age must be at least 18.")
+        return age
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if len(password) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters.")
+        return password
